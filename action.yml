@@ -1,0 +1,38 @@
+name: "P6 GHA: PR Labeler"
+description: "P6 GHA: PR Labeler"
+author: "Philip M. Gollucci"
+
+inputs:
+  owner:
+    description: "Repository owner"
+    required: true
+    default: "pgollucci"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Label core contributions
+      if: github.event.pull_request.user.login == inputs.owner && !contains(join(github.event.pull_request.labels.*.name, ','), 'contribution/core')
+      uses: actions/github-script@v8.0.0
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          await github.rest.issues.addLabels({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.issue.number,
+            labels: ['contribution/core']
+          })
+
+    - name: Label auto-merge for core
+      if: contains(join(github.event.pull_request.labels.*.name, ','), 'contribution/core') && !contains(join(github.event.pull_request.labels.*.name, ','), 'auto-merge')
+      uses: actions/github-script@v8.0.0
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          await github.rest.issues.addLabels({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.issue.number,
+            labels: ['auto-merge']
+          })
