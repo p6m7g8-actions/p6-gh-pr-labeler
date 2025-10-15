@@ -8,4 +8,6 @@
 ```yaml
       - name: Label PRs
         uses: p6m7g8-actions/p6-gh-pr-labeler@main
+        with:
+          gh_token: ${{ secrets.GITHUB_TOKEN }}
 ```
