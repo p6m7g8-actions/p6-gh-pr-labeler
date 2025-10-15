@@ -1,8 +1,9 @@
 name: PR Labeler
 
 on:
-  pull_request_target:
-    types: [opened, synchronize, reopened, labeled, unlabeled]
+  workflow_dispatch: {}
+  schedule:
+    - cron: '0 14 * * *'
 
 jobs:
   label:
